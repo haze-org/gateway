@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: haze-gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/haze-org
+      client:
+        registration:
+          keycloak:
+            client-id: haze-org-client
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
+            scope: openid, profile, email
+            authorization-grant-type: authorization_code
+            # This is where Keycloak sends the user back after login
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/haze-org
+            user-name-attribute: preferred_username
+
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay # Crucial: This passes the login token to other services
+
+server:
+  port: 8081
