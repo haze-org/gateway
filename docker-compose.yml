@@ -1,0 +1,52 @@
+# The version of the Docker Compose file format
+services:
+  # --- DATABASE SERVICE ---
+  keycloak-db:
+    image: postgres:16
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data # This saves your DB data
+    # Environment variables set variables INSIDE the container's OS
+    environment:
+      POSTGRES_DB: keycloak         # Creates a database named 'keycloak'
+      POSTGRES_USER: keycloak       # Database username
+      POSTGRES_PASSWORD: password    # Database password
+    # Healthcheck ensures the DB is actually ready to accept connections
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 5s                  # Check every 5 seconds
+      timeout: 5s                   # Wait 5s for a response
+      retries: 5                    # Fail after 5 tries
+
+  # --- IDENTITY PROVIDER ---
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5.4
+    # The command to run when the container starts ('start-dev' is for development)
+    command: start-dev --import-realm # Adds the auto-import feature
+    environment:
+      KC_DB: postgres               # Tell Keycloak to use Postgres instead of H2
+      # Note 'keycloak-db' below: Docker uses the service name as the hostname
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin         # The UI Login username
+      KEYCLOAK_ADMIN_PASSWORD: admin # The UI Login password
+      KC_HOSTNAME_STRICT: "false"
+#      KC_HTTP_RELATIVE_PATH: /auth # Optional: if you want your URL to be /auth
+    volumes:
+      - ./keycloak-imports:/opt/keycloak/data/import # Put your JSON here
+    ports:
+      - "8080:8080"                 # Map [Computer]:[Inside Container]
+    # This prevents Keycloak from starting until the DB healthcheck passes
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+
+  # --- MESSAGE BROKER ---
+  rabbitmq:
+    image: rabbitmq:4-management
+    ports:
+      - "5672:5672"                 # Port for the User Service to send messages
+      - "15672:15672"               # Port for the Web Dashboard
+    environment:
+      RABBITMQ_DEFAULT_USER: guest  # Default login for the dashboard
+      RABBITMQ_DEFAULT_PASS: guest
