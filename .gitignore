@@ -33,3 +33,4 @@ build/
 .vscode/
 
 src/main/java/com/haze/gateway/TestController.java
+postgres_data/
