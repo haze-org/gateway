@@ -1,11 +1,15 @@
+server:
+  port: 8081
 spring:
   application:
     name: haze-gateway
   security:
     oauth2:
+      # for jwt token validation
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/realms/haze-org
+      # for user login, will remove once frontend is created
       client:
         registration:
           keycloak:
@@ -19,11 +23,3 @@ spring:
           keycloak:
             issuer-uri: http://localhost:8080/realms/haze-org
             user-name-attribute: preferred_username
-
-  cloud:
-    gateway:
-      default-filters:
-        - TokenRelay # Crucial: This passes the login token to other services
-
-server:
-  port: 8081
