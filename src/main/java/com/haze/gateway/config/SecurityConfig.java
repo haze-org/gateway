@@ -14,17 +14,14 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
-                .authorizeExchange(exchanges -> exchanges
-                        .anyExchange().authenticated()
-                )
-                // 1. Handle Browser Logins (Cookies)
+                // all requests are protected
+                .authorizeExchange(exchanges -> exchanges.anyExchange().authenticated())
+                // for humans login, redirects to login page
                 .oauth2Login(Customizer.withDefaults())
-
-                // 2. Handle Postman/Machine calls (JWTs)
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-
-        // Disable CSRF for now to make Postman testing easier (will enable it once FE is ready)
-        http.csrf(ServerHttpSecurity.CsrfSpec::disable);
+                // for machines login, when a client sends jwt token, we verify it against issuer uri from keycloak
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                // csrf disabled for development
+                .csrf(ServerHttpSecurity.CsrfSpec::disable);
 
         return http.build();
     }

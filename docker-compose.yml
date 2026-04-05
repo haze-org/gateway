@@ -1,4 +1,5 @@
-# The version of the Docker Compose file format
+name: haze-gateway
+
 services:
   # --- DATABASE SERVICE ---
   keycloak-db:
@@ -20,6 +21,7 @@ services:
   # --- IDENTITY PROVIDER ---
   keycloak:
     image: quay.io/keycloak/keycloak:26.5.4
+    container_name: keycloak
     # The command to run when the container starts ('start-dev' is for development)
     command: start-dev --import-realm # Adds the auto-import feature
     environment:
@@ -50,6 +52,7 @@ services:
   # --- MESSAGE BROKER ---
   rabbitmq:
     image: rabbitmq:4-management
+    container_name: rabbitmq
     ports:
       - "5672:5672"                 # Port for the User Service to send messages
       - "15672:15672"               # Port for the Web Dashboard
