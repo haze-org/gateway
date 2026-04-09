@@ -3,6 +3,7 @@ package com.haze.gateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.GatewayFilterSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 
@@ -18,6 +19,11 @@ public class GatewayApplication {
 		return builder.routes()
 				.route("follow-request-route", p -> p
 						.path("/follow-request")
+						.filters(GatewayFilterSpec::tokenRelay)
+						.uri("http://localhost:8082"))
+				.route("profile-route", p -> p
+						.path("/profile")
+						.filters(GatewayFilterSpec::tokenRelay)
 						.uri("http://localhost:8082"))
 				.build();
 	}
