@@ -32,6 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-src/main/java/com/haze/gateway/TestController.java
+src/main/java/com/apricity/gateway/TestController.java
 postgres_data/
 keycloak-plugins/*.jar

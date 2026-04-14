@@ -8,11 +8,11 @@
 		<version>4.0.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.haze</groupId>
+	<groupId>com.apricity</groupId>
 	<artifactId>gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>gateway</name>
-	<description>Haze backend API gateway</description>
+	<description>Apricity backend API gateway</description>
 	<url/>
 	<licenses>
 		<license/>

@@ -1,4 +1,4 @@
-name: haze-gateway
+name: apricity-gateway
 
 services:
   # --- DATABASE SERVICE ---

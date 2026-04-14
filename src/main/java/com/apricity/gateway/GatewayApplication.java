@@ -1,4 +1,4 @@
-package com.haze.gateway;
+package com.apricity.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,6 +25,9 @@ public class GatewayApplication {
 						.path("/profile")
 						.filters(GatewayFilterSpec::tokenRelay)
 						.uri("http://localhost:8082"))
+				.route("post-upload-route", p -> p
+						.path("/posts")
+						.uri("http://localhost:8083"))
 				.build();
 	}
 }
